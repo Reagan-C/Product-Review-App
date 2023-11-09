@@ -49,7 +49,7 @@ namespace ProductReviewApp.Controllers
         [HttpGet("{categoryId}/products")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Product>))]
         [ProducesResponseType(400)]
-        public IActionResult GetProductsByCategory(int categoryId) 
+        public IActionResult GetProductsByCategoryId(int categoryId) 
         {
             if (!_categoryRepository.CategoryExists(categoryId)) 
                 return NotFound();
