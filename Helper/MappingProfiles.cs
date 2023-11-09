@@ -10,10 +10,15 @@ namespace ProductReviewApp.Helper
         {
             CreateMap<Product, ProductDto>();
             CreateMap<Category, CategoryDto>();
+            CreateMap<CategoryDto, Category>();
             CreateMap<Country, CountryDto>();
+            CreateMap<CountryDto, Country>();
             CreateMap<Reviewer, ReviewerDto>();
             CreateMap<Manufacturer, ManufacturerDto>();
+            CreateMap<ManufacturerDto, Manufacturer>();
             CreateMap<Review, ReviewDto>();
+
+            
         }
     }
 }

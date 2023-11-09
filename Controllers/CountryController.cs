@@ -88,10 +88,39 @@ namespace ProductReviewApp.Controllers
 
             var reviewers = _mapper.Map<List<ReviewerDto>>(_countryRepository.GetReviewersFromACountry(countryId));
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(ModelState);
 
             return Ok(reviewers);
         }
 
+        [HttpPost]
+        [ProducesResponseType(201)]
+        public IActionResult AddCountry([FromBody] CountryDto countryDto)
+        {
+            if (countryDto == null)
+                return BadRequest(ModelState);
+
+            var country = _countryRepository.GetCountries()
+                .Where(c => c.Name.Trim().ToUpper() == countryDto.Name.Trim().ToUpper())
+                .FirstOrDefault();
+
+            if (country != null)
+            {
+                ModelState.AddModelError("", "Country already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var countryMap = _mapper.Map<Country>(countryDto);
+
+            if (!_countryRepository.CreateCountry(countryMap))
+            {
+                ModelState.AddModelError("", "Something went wront while saving country details");
+                return StatusCode(500, ModelState);
+            }
+            return StatusCode(201, "Successfully added");
+        }
     }
 }

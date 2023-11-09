@@ -12,11 +12,13 @@ namespace ProductReviewApp.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
+        private readonly IReviewRepository _reviewRepository;
 
-        public ProductController(IProductRepository productRepository, IMapper mapper)
+        public ProductController(IProductRepository productRepository, IMapper mapper, IReviewRepository reviewRepository)
         {
             _productRepository = productRepository;
             _mapper = mapper;
+            _reviewRepository = reviewRepository;
         }
 
         [HttpGet]
@@ -58,6 +60,21 @@ namespace ProductReviewApp.Controllers
                 return BadRequest(ModelState);
             
             return Ok(AverageRating);
+        }
+
+        [HttpGet("reviews/{productId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Review>))]
+        public IActionResult GetReviews(int productId) 
+        { 
+            if (!_productRepository.IsProductAvailable(productId))
+                return NotFound();
+
+            var reviews = _mapper.Map<List<ReviewDto>>(_reviewRepository.GetProductReviews(productId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(reviews);
         }
 
     }

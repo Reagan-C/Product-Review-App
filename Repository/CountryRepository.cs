@@ -48,5 +48,17 @@ namespace ProductReviewApp.Repository
         {
             return _context.Reviewers.Where(r => r.Country.Id == countryId).ToList();
         }
+
+        public bool CreateCountry(Country country)
+        {
+            _context.Add(country);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var savedCountry = _context.SaveChanges();
+            return savedCountry > 0 ? true : false;
+        }
     }
 }

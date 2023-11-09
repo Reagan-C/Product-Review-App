@@ -11,5 +11,7 @@ namespace ProductReviewApp.Interfaces
         ICollection<Reviewer> GetReviewersFromACountry(int countryId);
         bool CountryExistsByName(string name);
         bool CountryExistsById(int countryId);
+        bool CreateCountry(Country country);
+        bool Save();
     }
 }

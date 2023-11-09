@@ -17,6 +17,12 @@ namespace ProductReviewApp.Repository
             return _context.Categories.Any(c => c.Id == id);
         }
 
+        public bool CreateCategory(Category category)
+        {
+            _context.Add(category);
+            return Save();
+        }
+
         public ICollection<Category> GetCategories()
         {
             return _context.Categories.OrderBy(c => c.Id).ToList();
@@ -31,6 +37,12 @@ namespace ProductReviewApp.Repository
         {
             return _context.ProductCategories.Where(pc => pc.CategoryId == id)
                 .Select(p => p.Product).ToList();
+        }
+
+        public bool Save()
+        {
+            var savedCategory = _context.SaveChanges();
+            return savedCategory > 0 ? true : false;
         }
     }
 }
