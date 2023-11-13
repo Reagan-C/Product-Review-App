@@ -8,5 +8,7 @@ namespace ProductReviewApp.Interfaces
         Manufacturer GetManufacturerById(int manufacturerId);
         ICollection<Product> GetProductsByManufacturer(int manufacturerId);
         bool ManufacturerExists(int manufacturerId);
+        bool AddManufacturer(Manufacturer manufacturer);
+        bool Save();
     }
 }

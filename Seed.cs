@@ -103,7 +103,7 @@ namespace ProductReviewApp
                 var product2 = new Product()
                 {
                     Name = "G280",
-                    Price = 108.3,
+                    Price = 108,
                     Description = "Your laptop for all occasions",
                     Manufacturer = new Manufacturer()
                     {

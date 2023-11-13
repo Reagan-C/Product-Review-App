@@ -9,6 +9,7 @@ namespace ProductReviewApp.Helper
         public MappingProfiles()
         {
             CreateMap<Product, ProductDto>();
+            CreateMap<ProductDto, Product>();
             CreateMap<Category, CategoryDto>();
             CreateMap<CategoryDto, Category>();
             CreateMap<Country, CountryDto>();
@@ -17,6 +18,7 @@ namespace ProductReviewApp.Helper
             CreateMap<Manufacturer, ManufacturerDto>();
             CreateMap<ManufacturerDto, Manufacturer>();
             CreateMap<Review, ReviewDto>();
+            CreateMap<ReviewDto, Review>();
 
             
         }

@@ -13,6 +13,27 @@ namespace ProductReviewApp.Repository
             _context = context;
         }
 
+        public bool AddProduct(int categoryId, int manufacturerId, Product product)
+        {
+            var category = _context.Categories.Where(c => c.Id == categoryId).FirstOrDefault();
+            var manufacturer = _context.Manufacturers.Where(m => m.Id == manufacturerId).FirstOrDefault();
+
+            if (manufacturer == null || category == null)
+                return false;
+
+            var productCategory = new ProductCategory()
+            {
+                Product = product,
+                Category = category
+            };
+
+            product.Manufacturer = manufacturer;
+
+            _context.Add(product);
+            _context.Add(productCategory);
+            return Save();
+        }
+
         public Product GetProductById(int id)
         {
             return _context.Products.Where(p => p.Id == id).FirstOrDefault();
@@ -41,6 +62,12 @@ namespace ProductReviewApp.Repository
         public bool IsProductAvailable(int id)
         {
             return _context.Products.Any(p => p.Id == id);
+        }
+
+        public bool Save()
+        {
+            var savedProduct = _context.SaveChanges();
+            return savedProduct > 0 ? true : false;
         }
     }
 }

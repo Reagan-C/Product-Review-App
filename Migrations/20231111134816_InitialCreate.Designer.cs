@@ -12,7 +12,7 @@ using ProductReviewApp.Data;
 namespace ProductReviewApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231107143544_InitialCreate")]
+    [Migration("20231111134816_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -106,8 +106,8 @@ namespace ProductReviewApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,1)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");

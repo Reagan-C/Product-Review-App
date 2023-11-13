@@ -13,6 +13,12 @@ namespace ProductReviewApp.Repository
             _context = dataContext;
         }
 
+        public bool AddManufacturer(Manufacturer manufacturer)
+        {
+            _context.Add(manufacturer);
+            return Save();
+        }
+
         public Manufacturer GetManufacturerById(int manufacturerId)
         {
             return _context.Manufacturers.Where(m => m.Id == manufacturerId).FirstOrDefault();
@@ -31,6 +37,12 @@ namespace ProductReviewApp.Repository
         public bool ManufacturerExists(int manufacturerId)
         {
             return _context.Manufacturers.Any(m => m.Id == manufacturerId);
+        }
+
+        public bool Save()
+        {
+            var savedManufacturer = _context.SaveChanges();
+            return savedManufacturer > 0 ? true : false;
         }
     }
 }

@@ -62,5 +62,36 @@ namespace ProductReviewApp.Controllers
             
             return Ok(products);
         }
+
+        [HttpPost]
+        [ProducesResponseType(201)]
+        public IActionResult AddManufacturer([FromBody] ManufacturerDto manufacturerDto)
+        {
+            if (manufacturerDto == null)
+                return BadRequest(ModelState);
+
+            var manufacturer = _manufacturerRepository.GetManufacturers()
+                .Where(m => m.Name.Trim().ToUpper() == manufacturerDto.Name.Trim().ToUpper())
+                .FirstOrDefault();
+
+            if (manufacturer != null)
+            {
+                ModelState.AddModelError("", "Manufacturer already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var manufacturerMap = _mapper.Map<Manufacturer>(manufacturerDto);
+            if (!_manufacturerRepository.AddManufacturer(manufacturerMap))
+            {
+                ModelState.AddModelError("", "A Problem was encountered while saving manufacturer");
+                return StatusCode(500, ModelState);
+            }
+
+            return StatusCode(201, "Successfully added");
+
+        }
     }
 }

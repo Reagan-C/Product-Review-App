@@ -13,12 +13,19 @@ namespace ProductReviewApp.Controllers
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
         private readonly IReviewRepository _reviewRepository;
+        private readonly IManufacturerRepository _manufacturerRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public ProductController(IProductRepository productRepository, IMapper mapper, IReviewRepository reviewRepository)
+        public ProductController(IProductRepository productRepository, IMapper mapper, 
+            IReviewRepository reviewRepository, IManufacturerRepository manufacturerRepository, 
+            ICategoryRepository categoryRepository)
         {
             _productRepository = productRepository;
             _mapper = mapper;
             _reviewRepository = reviewRepository;
+            _manufacturerRepository = manufacturerRepository;
+            _categoryRepository = categoryRepository;
+
         }
 
         [HttpGet]
@@ -75,6 +82,39 @@ namespace ProductReviewApp.Controllers
                 return BadRequest(ModelState);
 
             return Ok(reviews);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(201)]
+        public IActionResult AddProduct([FromQuery]int categoryId, [FromQuery]int manufacturerId,
+            [FromBody]ProductDto productDto)
+        {
+            if (productDto == null ) 
+                return BadRequest(ModelState);
+
+            var checkProduct = _productRepository.GetProducts()
+                .Where(p => p.Name.Trim().ToLower() == productDto.Name.Trim().ToLower())
+                .FirstOrDefault();
+
+            if (checkProduct != null)
+            {
+                ModelState.AddModelError("", "A Product with this name already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var saveProduct = _mapper.Map<Product>(productDto);
+            
+
+            if (!_productRepository.AddProduct(categoryId, manufacturerId, saveProduct))
+            {
+                ModelState.AddModelError("", "Problem encountered while saving product, please check input parameters");
+                return StatusCode(500, ModelState);
+            }
+
+            return StatusCode(201, "Product saved");
         }
 
     }

@@ -13,12 +13,15 @@ namespace ProductReviewApp.Controllers
         private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
         private readonly IProductRepository _productRepository;
+        private readonly IReviewerRepository _reviewerRepository;
 
-        public ReviewController(IReviewRepository reviewRepository, IMapper mapper, IProductRepository productRepository)
+        public ReviewController(IReviewRepository reviewRepository, IMapper mapper, 
+            IProductRepository productRepository, IReviewerRepository reviewerRepository)
         {
             _reviewRepository = reviewRepository;
             _mapper = mapper;
             _productRepository = productRepository;
+            _reviewerRepository = reviewerRepository;
         }
 
         [HttpGet]
@@ -54,6 +57,38 @@ namespace ProductReviewApp.Controllers
             var review = _mapper.Map<ReviewDto>(_reviewRepository.GetReviewById(id));
 
             return Ok(review);
+        }
+
+        [HttpPost]
+        [ProducesResponseType (201)]
+        public IActionResult AddReview([FromQuery]int reviewerId, [FromQuery]int productId,
+            [FromBody]ReviewDto reviewDto)
+        {
+            if (reviewDto == null) 
+                return BadRequest(ModelState);
+
+            var checkedReview = _reviewRepository.GetAllReviews()
+                .Where(pr => pr.Title.Trim().ToLower() == reviewDto.Title.Trim().ToLower())
+                .FirstOrDefault();
+
+            if (checkedReview != null)
+            {
+                    ModelState.AddModelError("", "Review already exists");
+                    return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var savedReview = _mapper.Map<Review>(reviewDto);
+
+            if (!_reviewRepository.AddReview(reviewerId, productId, savedReview))
+            {
+                ModelState.AddModelError("", "Problem encountered while saving review");
+                return StatusCode(500, ModelState);
+            }
+
+            return StatusCode(201, "Review added");
         }
     }
 }

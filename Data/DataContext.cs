@@ -33,6 +33,10 @@ namespace ProductReviewApp.Data
                 .HasOne(c => c.Category)
                 .WithMany(pc => pc.ProductCategories)
                 .HasForeignKey(c => c.CategoryId);
+
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,1)");
         }
     }
 }

@@ -9,5 +9,7 @@ namespace ProductReviewApp.Interfaces
         Product GetProductByName(string name);
         decimal GetProductRating(int id);
         bool IsProductAvailable(int id);
+        bool AddProduct(int categoryId, int manufacturerId, Product product);
+        bool Save();
     }
 }

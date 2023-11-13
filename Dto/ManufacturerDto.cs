@@ -1,6 +1,6 @@
 ﻿namespace ProductReviewApp.Dto
 {
-    internal class ManufacturerDto
+    public class ManufacturerDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
