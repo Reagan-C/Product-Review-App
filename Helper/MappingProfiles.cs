@@ -15,6 +15,7 @@ namespace ProductReviewApp.Helper
             CreateMap<Country, CountryDto>();
             CreateMap<CountryDto, Country>();
             CreateMap<Reviewer, ReviewerDto>();
+            CreateMap<ReviewerDto, Reviewer>();
             CreateMap<Manufacturer, ManufacturerDto>();
             CreateMap<ManufacturerDto, Manufacturer>();
             CreateMap<Review, ReviewDto>();

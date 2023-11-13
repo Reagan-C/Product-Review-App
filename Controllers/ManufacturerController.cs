@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProductReviewApp.Dto;
 using ProductReviewApp.Interfaces;
 using ProductReviewApp.Models;
+using ProductReviewApp.Repository;
 
 namespace ProductReviewApp.Controllers
 {
@@ -91,7 +92,30 @@ namespace ProductReviewApp.Controllers
             }
 
             return StatusCode(201, "Successfully added");
+        }
 
+        [HttpPut("{manufacturerId}")]
+        [ProducesResponseType(204)]
+        public IActionResult UpdateManufacturer(int manufacturerId, [FromBody]ManufacturerDto manufacturerDto)
+        {
+            if (manufacturerDto == null)
+                return BadRequest(ModelState);
+
+            if (manufacturerId != manufacturerDto.Id)
+                return BadRequest("IDs does not match");
+
+            if (!_manufacturerRepository.ManufacturerExists(manufacturerId))
+                return NotFound("A manufacturer with an ID " + manufacturerId + " doesnt exist in our records");
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var manufacturer = _mapper.Map<Manufacturer>(manufacturerDto);
+
+            if (!_manufacturerRepository.UpdateManufacturer(manufacturer))
+                return StatusCode(422, "Problem encountered while updating manufacturer");
+
+            return NoContent();
         }
     }
 }

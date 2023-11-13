@@ -44,5 +44,11 @@ namespace ProductReviewApp.Repository
             var savedManufacturer = _context.SaveChanges();
             return savedManufacturer > 0 ? true : false;
         }
+
+        public bool UpdateManufacturer(Manufacturer manufacturer)
+        {
+            _context.Update(manufacturer);
+            return Save();
+        }
     }
 }

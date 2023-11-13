@@ -60,5 +60,11 @@ namespace ProductReviewApp.Repository
             var savedCountry = _context.SaveChanges();
             return savedCountry > 0 ? true : false;
         }
+
+        public bool UpdateCountry(Country country)
+        {
+            _context.Update(country);
+            return Save();
+        }
     }
 }

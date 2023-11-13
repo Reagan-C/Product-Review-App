@@ -91,5 +91,33 @@ namespace ProductReviewApp.Controllers
 
             return StatusCode(201, "Successfully created");
         }
+
+        [HttpPut("{categoryId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(400)]
+        public IActionResult UpdateCategory(int categoryId, [FromBody]CategoryDto categoryDto) 
+        {
+            if (categoryDto == null) 
+                return BadRequest(ModelState);
+
+            if (categoryId != categoryDto.Id)
+                return BadRequest("IDs do not match");
+
+            if (!_categoryRepository.CategoryExists(categoryId))
+                return NotFound("Category doesn't exist in our records");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var category = _mapper.Map<Category>(categoryDto);
+
+            if (!_categoryRepository.UpdateCategory(category))
+                return StatusCode(500, "Failure updating category");
+
+            return StatusCode(204);
+        }
+
+
     }
 }

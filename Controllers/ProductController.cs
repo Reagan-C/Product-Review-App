@@ -117,5 +117,28 @@ namespace ProductReviewApp.Controllers
             return StatusCode(201, "Product saved");
         }
 
+        [HttpPut("{productId}")]
+        [ProducesResponseType(204)]
+        public IActionResult UpdateProduct(int productId, [FromBody]ProductDto productDto)
+        {
+            if (productDto == null)
+                return BadRequest(ModelState);
+
+            if (productId != productDto.Id) 
+                return BadRequest("IDs do not match");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_productRepository.IsProductAvailable(productId))
+                return NotFound("Product doesnt exist in the records");
+
+            var product = _mapper.Map<Product>(productDto);
+            if (!_productRepository.UpdateProduct(product))
+                return StatusCode(500, "Problem encountered while saving product");
+
+            return NoContent();
+        }
+
     }
 }

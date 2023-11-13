@@ -12,11 +12,14 @@ namespace ProductReviewApp.Controllers
     {
         private readonly IReviewerRepository _reviewerRepository;
         private readonly IMapper _mapper;
+        private readonly ICountryRepository _countryRepository;
 
-        public ReviewerController(IReviewerRepository reviewerRepository, IMapper mapper)
+        public ReviewerController(IReviewerRepository reviewerRepository, IMapper mapper,
+            ICountryRepository countryRepository)
         {
             _reviewerRepository = reviewerRepository;
             _mapper = mapper;
+            _countryRepository = countryRepository;
         }
 
         [HttpGet("{id}")]
@@ -59,6 +62,42 @@ namespace ProductReviewApp.Controllers
                 return BadRequest(ModelState);
 
             return Ok(reviewers);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(201)]
+        public IActionResult AddReviewer([FromQuery]int countryId, [FromBody]ReviewerDto reviewerDto)
+        {
+            if (reviewerDto == null)
+                return BadRequest(ModelState);
+
+            var reviewer = _reviewerRepository.GetReviewers()
+                .Where(r => r.LastName.Trim().ToLower() == reviewerDto.LastName.Trim().ToLower())
+                .FirstOrDefault();
+
+            if (reviewer != null)
+            {
+                ModelState.AddModelError("", "Reviewer already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            var country = _countryRepository.GetCountryById(countryId);
+            if (country == null)
+                return BadRequest("Invalid country ID");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var reviewerMap = _mapper.Map<Reviewer>(reviewerDto);
+            reviewerMap.Country = country;
+
+            if (!_reviewerRepository.CreateReviewer(reviewerMap))
+            {
+                ModelState.AddModelError("", "Problem encountered while saving reviewer details");
+                return StatusCode(500, ModelState);
+            }
+            
+            return StatusCode(201, "Reviewer Added");
         }
     }
 }

@@ -122,5 +122,29 @@ namespace ProductReviewApp.Controllers
             }
             return StatusCode(201, "Successfully added");
         }
+
+        [HttpPut("{countryId}")]
+        [ProducesResponseType(204)]
+        public IActionResult UpdateCountry(int countryId, [FromBody] CountryDto countryDto)
+        {
+            if (countryDto == null)
+                return BadRequest(ModelState);
+
+            if (countryId != countryDto.Id)
+                return BadRequest("IDs does not match");
+
+            if (!_countryRepository.CountryExistsById(countryId))
+                return NotFound("Country with an ID " + countryId + " doesnt exist in our records");
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var country = _mapper.Map<Country>(countryDto);
+
+            if (!_countryRepository.UpdateCountry(country))
+                return StatusCode(422, "Problem encountered while updating country");
+
+            return NoContent();
+        }
     }
 }

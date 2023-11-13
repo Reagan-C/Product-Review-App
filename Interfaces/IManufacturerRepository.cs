@@ -10,5 +10,6 @@ namespace ProductReviewApp.Interfaces
         bool ManufacturerExists(int manufacturerId);
         bool AddManufacturer(Manufacturer manufacturer);
         bool Save();
+        bool UpdateManufacturer(Manufacturer manufacturer);
     }
 }

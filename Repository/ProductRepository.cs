@@ -69,5 +69,11 @@ namespace ProductReviewApp.Repository
             var savedProduct = _context.SaveChanges();
             return savedProduct > 0 ? true : false;
         }
+
+        public bool UpdateProduct(Product product)
+        {
+            _context.Update(product);
+            return Save();
+        }
     }
 }

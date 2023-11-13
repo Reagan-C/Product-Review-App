@@ -13,5 +13,6 @@ namespace ProductReviewApp.Interfaces
         bool CountryExistsById(int countryId);
         bool CreateCountry(Country country);
         bool Save();
+        bool UpdateCountry(Country country);
     }
 }
