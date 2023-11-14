@@ -146,5 +146,23 @@ namespace ProductReviewApp.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{countryId}")]
+        [ProducesResponseType(204)]
+        public IActionResult DeleteCountry(int countryId)
+        {
+            if (!_countryRepository.CountryExistsById(countryId))
+                return NotFound("Invalid country ID");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var countryToRemove = _countryRepository.GetCountryById(countryId);
+
+            if (!_countryRepository.DeleteCountry(countryToRemove))
+                return StatusCode(422, "something went wrong");
+
+            return NoContent();
+        }
     }
 }

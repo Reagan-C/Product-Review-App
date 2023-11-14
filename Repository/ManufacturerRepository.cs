@@ -19,6 +19,12 @@ namespace ProductReviewApp.Repository
             return Save();
         }
 
+        public bool DeleteManufacturer(Manufacturer manufacturer)
+        {
+            _context.Remove(manufacturer);
+            return Save();
+        }
+
         public Manufacturer GetManufacturerById(int manufacturerId)
         {
             return _context.Manufacturers.Where(m => m.Id == manufacturerId).FirstOrDefault();

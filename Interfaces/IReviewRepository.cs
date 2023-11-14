@@ -12,5 +12,7 @@ namespace ProductReviewApp.Interfaces
         bool AddReview(int reviewerId, int productId, Review review);
         bool Save();
         bool UpdateReview(Review review);
+        bool DeleteReview(Review review);
+        bool DeleteReviews(List<Review> reviews);
     }
 }

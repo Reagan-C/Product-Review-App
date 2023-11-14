@@ -12,5 +12,6 @@ namespace ProductReviewApp.Interfaces
         bool AddProduct(int categoryId, int manufacturerId, Product product);
         bool Save();
         bool UpdateProduct(Product product);
+        bool DeleteProduct(Product product);
     }
 }

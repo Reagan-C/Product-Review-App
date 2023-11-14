@@ -12,7 +12,7 @@ using ProductReviewApp.Data;
 namespace ProductReviewApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231111134816_InitialCreate")]
+    [Migration("20231114112445_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

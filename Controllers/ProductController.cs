@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProductReviewApp.Dto;
 using ProductReviewApp.Interfaces;
 using ProductReviewApp.Models;
+using ProductReviewApp.Repository;
 
 namespace ProductReviewApp.Controllers
 {
@@ -136,6 +137,28 @@ namespace ProductReviewApp.Controllers
             var product = _mapper.Map<Product>(productDto);
             if (!_productRepository.UpdateProduct(product))
                 return StatusCode(500, "Problem encountered while saving product");
+
+            return NoContent();
+        }
+
+        [HttpDelete("{productId}")]
+        [ProducesResponseType(204)]
+        public IActionResult DeleteProduct(int productId)
+        {
+            if (!_productRepository.IsProductAvailable(productId))
+                return NotFound("Invalid product ID");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var reviews = _reviewRepository.GetProductReviews(productId);
+            var productToRemove = _productRepository.GetProductById(productId);
+
+            if (!_reviewRepository.DeleteReviews(reviews.ToList()))
+                return StatusCode(422, "something went wrong while deleting reviews");
+
+            if (!_productRepository.DeleteProduct(productToRemove))
+                return StatusCode(422, "something went wrong");
 
             return NoContent();
         }

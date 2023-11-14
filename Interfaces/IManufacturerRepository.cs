@@ -11,5 +11,6 @@ namespace ProductReviewApp.Interfaces
         bool AddManufacturer(Manufacturer manufacturer);
         bool Save();
         bool UpdateManufacturer(Manufacturer manufacturer);
+        bool DeleteManufacturer(Manufacturer manufacturer);
     }
 }

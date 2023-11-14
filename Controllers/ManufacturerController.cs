@@ -117,5 +117,23 @@ namespace ProductReviewApp.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{manufacturerId}")]
+        [ProducesResponseType(204)]
+        public IActionResult DeleteManufacturer(int manufacturerId)
+        {
+            if (!_manufacturerRepository.ManufacturerExists(manufacturerId))
+                return NotFound("ID not found");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var manufacturer = _manufacturerRepository.GetManufacturerById(manufacturerId);
+
+            if (!_manufacturerRepository.DeleteManufacturer(manufacturer))
+                return StatusCode(422, "Something went wrong");
+
+            return NoContent();
+        }
     }
 }

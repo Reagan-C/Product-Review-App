@@ -115,5 +115,41 @@ namespace ProductReviewApp.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{reviewId}")]
+        [ProducesResponseType(204)]
+        public IActionResult DeleteReview(int reviewId)
+        {
+            if (!_reviewRepository.ReviewExists(reviewId))
+                return NotFound("Invalid review ID");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var review = _reviewRepository.GetReviewById(reviewId);
+
+            if (!_reviewRepository.DeleteReview(review))
+                return StatusCode(422, "something went wrong");
+
+            return NoContent();
+        }
+
+        [HttpDelete("{productId}")]
+        [ProducesResponseType(204)]
+        public IActionResult DeleteAllProductReviews(int productId)
+        {
+            if (!_productRepository.IsProductAvailable(productId))
+                return NotFound("Invalid product ID");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var reviews = _reviewRepository.GetProductReviews(productId);
+
+            if (!_reviewRepository.DeleteReviews(reviews.ToList()))
+                return StatusCode(422, "something went wrong");
+
+            return NoContent();
+        }
     }
 }

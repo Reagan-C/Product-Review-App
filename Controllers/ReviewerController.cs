@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProductReviewApp.Dto;
 using ProductReviewApp.Interfaces;
 using ProductReviewApp.Models;
+using ProductReviewApp.Repository;
 
 namespace ProductReviewApp.Controllers
 {
@@ -13,13 +14,15 @@ namespace ProductReviewApp.Controllers
         private readonly IReviewerRepository _reviewerRepository;
         private readonly IMapper _mapper;
         private readonly ICountryRepository _countryRepository;
+        private readonly IReviewRepository _reviewRepository;
 
         public ReviewerController(IReviewerRepository reviewerRepository, IMapper mapper,
-            ICountryRepository countryRepository)
+            ICountryRepository countryRepository, IReviewRepository reviewRepository)
         {
             _reviewerRepository = reviewerRepository;
             _mapper = mapper;
             _countryRepository = countryRepository;
+            _reviewRepository=reviewRepository;
         }
 
         [HttpGet("{id}")]
@@ -120,6 +123,28 @@ namespace ProductReviewApp.Controllers
 
             if (!_reviewerRepository.UpdateReviewer(reviewer))
                 return StatusCode(500, "Problem encountered while saving reviewer details");
+
+            return NoContent();
+        }
+
+        [HttpDelete("{reviewerId}")]
+        [ProducesResponseType(204)]
+        public IActionResult DeleteReviewer(int reviewerId)
+        {
+            if (!_reviewerRepository.ReviewerExists(reviewerId))
+                return NotFound("Invalid reviewer ID");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var reviews = _reviewerRepository.GetAllReviewsByReviewer(reviewerId);
+            var reviewer = _reviewerRepository.GetReviewer(reviewerId);
+
+            if (!_reviewRepository.DeleteReviews(reviews.ToList()))
+                return StatusCode(422, "something went wrong deleting reviews");
+
+            if (!_reviewerRepository.DeleteReviewer(reviewer))
+                return StatusCode(422, "something went wrong");
 
             return NoContent();
         }
