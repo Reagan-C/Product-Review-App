@@ -90,5 +90,30 @@ namespace ProductReviewApp.Controllers
 
             return StatusCode(201, "Review added");
         }
+
+        [HttpPut("{reviewId}")]
+        [ProducesResponseType(204)]
+        public IActionResult UpdateReview(int reviewId, [FromBody]ReviewDto reviewDto)
+        {
+            if (reviewDto == null)
+                return BadRequest(ModelState);
+
+            if (reviewId != reviewDto.Id)
+                return BadRequest("IDs do not match");
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            if (!_reviewRepository.ReviewExists(reviewId))
+                return NotFound("Review not found");
+
+            var review = _mapper.Map<Review>(reviewDto);
+            review.ReviewedOn = DateTime.Now.Date;
+
+            if (!_reviewRepository.UpdateReview(review))
+                return StatusCode(500, "Problem encountered while saving");
+
+            return NoContent();
+        }
     }
 }

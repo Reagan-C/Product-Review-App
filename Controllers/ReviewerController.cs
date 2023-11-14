@@ -99,5 +99,29 @@ namespace ProductReviewApp.Controllers
             
             return StatusCode(201, "Reviewer Added");
         }
+
+        [HttpPut("{reviewerId}")]
+        [ProducesResponseType(204)]
+        public IActionResult UpdateReviewer(int reviewerId, [FromBody]ReviewerDto reviewerDto)
+        {
+            if (reviewerDto == null)
+                return BadRequest(ModelState);
+
+            if (reviewerId != reviewerDto.Id)
+                return BadRequest("Ids do not match");
+
+            if (!_reviewerRepository.ReviewerExists(reviewerId))
+                return NotFound("Reviewer not found");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var reviewer = _mapper.Map<Reviewer>(reviewerDto);
+
+            if (!_reviewerRepository.UpdateReviewer(reviewer))
+                return StatusCode(500, "Problem encountered while saving reviewer details");
+
+            return NoContent();
+        }
     }
 }

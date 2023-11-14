@@ -11,5 +11,6 @@ namespace ProductReviewApp.Interfaces
         bool CreateCategory(Category category);
         bool Save();
         bool UpdateCategory(Category category);
+        bool DeleteCategory(Category category);
     }
 }

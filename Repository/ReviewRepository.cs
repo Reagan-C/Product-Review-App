@@ -1,4 +1,5 @@
 ﻿using ProductReviewApp.Data;
+using ProductReviewApp.Dto;
 using ProductReviewApp.Interfaces;
 using ProductReviewApp.Models;
 
@@ -58,6 +59,12 @@ namespace ProductReviewApp.Repository
         {
             var savedReview = _context.SaveChanges();
             return savedReview > 0 ? true : false;
+        }
+
+        public bool UpdateReview(Review review)
+        {
+            _context.Update(review);
+            return Save();
         }
     }
 }

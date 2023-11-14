@@ -118,6 +118,23 @@ namespace ProductReviewApp.Controllers
             return StatusCode(204);
         }
 
+        [HttpDelete("{categoryId}")]
+        [ProducesResponseType(204)]
+        public IActionResult DeleteCategory(int categoryId)
+        {
+            if (!_categoryRepository.CategoryExists(categoryId))
+                return NotFound("ID not found");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var categoryToDelete = _categoryRepository.GetCategory(categoryId);
+
+            if (!_categoryRepository.DeleteCategory(categoryToDelete))
+                return StatusCode(422, "Something went wrong");
+
+            return NoContent();
+        }
 
     }
 }

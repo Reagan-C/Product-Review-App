@@ -1,4 +1,5 @@
-﻿using ProductReviewApp.Models;
+﻿using ProductReviewApp.Dto;
+using ProductReviewApp.Models;
 
 namespace ProductReviewApp.Interfaces
 {
@@ -10,5 +11,6 @@ namespace ProductReviewApp.Interfaces
         bool ReviewExists(int id);
         bool AddReview(int reviewerId, int productId, Review review);
         bool Save();
+        bool UpdateReview(Review review);
     }
 }
